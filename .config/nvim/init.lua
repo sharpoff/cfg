@@ -3,11 +3,9 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin')
 Plug('morhetz/gruvbox')
-Plug('tpope/vim-dispatch')
-Plug('junegunn/fzf.vim')
-Plug('junegunn/fzf', { ['do'] = function()
-  vim.fn['fzf#install']()
-end })
+Plug('neovim/nvim-lspconfig')
 vim.call('plug#end')
 
 require("settings")
+require("mappings")
+require("lsp")

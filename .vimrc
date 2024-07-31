@@ -7,13 +7,13 @@ set incsearch
 set ruler
 set autoread
 
+set wildmenu
+
 set undofile
 set undodir=$HOME/.vim/undo " don't forget to create this directory
 
 colorscheme gruvbox
 set background=dark
-set colorcolumn=80
-set mouse=a
 set termguicolors
 
 set tags=./tags;,tags;
