@@ -12,3 +12,5 @@ require('lspconfig').clangd.setup {
         ['clangd'] = {},
     },
 }
+
+vim.opt.completeopt = { "menu" }

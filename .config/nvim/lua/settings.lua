@@ -7,6 +7,7 @@ vim.cmd("set nu")
 vim.cmd("set nocompatible")
 vim.cmd("filetype plugin on")
 vim.cmd("syntax on")
+vim.cmd("set signcolumn=yes")
 
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.swapfile = false
@@ -23,5 +24,5 @@ vim.opt.updatetime = 50
 vim.g.netrw_banner = 0 -- disable top help menu
 vim.g.netrw_liststyle = 3
 
-vim.cmd('colorscheme gruvbox')
 vim.g.gruvbox_sign_column = 'bg0'
+vim.cmd('colorscheme gruvbox')
