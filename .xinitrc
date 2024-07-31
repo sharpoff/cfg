@@ -6,6 +6,7 @@ setxkbmap -layout us,ru -option grp:alt_shift_toggle &
 slstatus &
 xss-lock -- slock &
 start-pulseaudio-x11 &
+picom &
 exec dwm
 
 # gnome

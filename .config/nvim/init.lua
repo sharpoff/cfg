@@ -1,23 +1,13 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
+local vim = vim
+local Plug = vim.fn['plug#']
 
-require("remap")
-require("vim-options")
-require("lazy").setup({
-    spec = "plugins",
-    change_detection = { notify = false }
-})
+vim.call('plug#begin')
+Plug('morhetz/gruvbox')
+Plug('tpope/vim-dispatch')
+Plug('junegunn/fzf.vim')
+Plug('junegunn/fzf', { ['do'] = function()
+  vim.fn['fzf#install']()
+end })
+vim.call('plug#end')
 
--- vim.cmd.colorscheme "github_dark_default"
--- vim.cmd.colorscheme "tokyonight-night"
-vim.cmd.colorscheme "gruvbox"
+require("settings")
