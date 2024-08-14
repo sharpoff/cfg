@@ -10,8 +10,7 @@ vim.cmd("syntax on")
 vim.cmd("set signcolumn=yes")
 
 -- for completion window
-vim.cmd("set pumheight=6")
-vim.cmd("set pumwidth=1")
+vim.cmd("set pumheight=8")
 
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.swapfile = false
