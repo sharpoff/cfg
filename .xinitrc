@@ -1,13 +1,17 @@
 # dwm
+#export _JAVA_AWT_WM_NONREPARENTING=1
+#export AWT_TOOLKIT=MToolkit
+#feh --bg-center ~/Pictures/beach.jpg
+#setxkbmap -layout us,ru -option grp:alt_shift_toggle &
+#slstatus &
+#xss-lock -- slock &
+#start-pulseaudio-x11 &
+#picom &
+#exec dwm
+
+# sway
 export _JAVA_AWT_WM_NONREPARENTING=1
-export AWT_TOOLKIT=MToolkit
-feh --bg-center ~/Pictures/beach.jpg
-setxkbmap -layout us,ru -option grp:alt_shift_toggle &
-slstatus &
-xss-lock -- slock &
-start-pulseaudio-x11 &
-picom &
-exec dwm
+exec sway
 
 # gnome
 # export XDG_SESSION_TYPE=x11
