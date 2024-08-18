@@ -23,8 +23,14 @@ set $menu rofi -show drun | xargs swaymsg exec --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-set $bg $HOME/Pictures/bg/linux-kills-win.jpg
-exec swaybg -i $(find $HOME/Pictures/bg/linux-kills-win.jpg)
+output * bg '/usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png' fill
+
+gaps inner 10
+gaps outer 5
+
+font pango: SourceCodePro Medium 12
+
+exec wl-paste -t text --watch clipman store --no-persist
 #
 # Example configuration:
 
@@ -204,26 +210,20 @@ bindsym $mod+Shift+n exec swaylock --color 121413
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command while date +'%d-%m-%Y %R'; do sleep 1; done
-
-    font "Nerd Font Normal Regular 12 @wght=10"
-
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
+    swaybar_command waybar
 }
 
 include /etc/sway/config.d/*
 
 input * {
     xkb_layout "us,ru"
-    xkb_options "grp:win_space_toggle"
+    xkb_options "grp:alt_shift_toggle"
 }
 
 input <identifier> xkb_model "pc101"
+
+# capture full screen to clipboard
+bindsym Shift+Print exec grim - | wl-copy
+    
+# capture specified screen area to clipboard    
+bindsym Print exec grim -g "$(slurp)" - | wl-copy
