@@ -9,10 +9,6 @@
 #picom &
 #exec dwm
 
-# sway
-export _JAVA_AWT_WM_NONREPARENTING=1
-exec sway
-
 # gnome
 # export XDG_SESSION_TYPE=x11
 # export GDK_BACKEND=x11
