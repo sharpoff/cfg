@@ -1,13 +1,20 @@
-local vim = vim
-local Plug = vim.fn['plug#']
-
-vim.call('plug#begin')
-Plug('morhetz/gruvbox')
-Plug('neovim/nvim-lspconfig')
-Plug('hrsh7th/nvim-cmp')
-Plug('hrsh7th/cmp-nvim-lsp')
-vim.call('plug#end')
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "--branch=stable",
+        "https://github.com/folke/lazy.nvim.git",
+        lazypath
+    })
+end
+vim.opt.rtp:prepend(lazypath)
 
 require("settings")
 require("mappings")
-require("lsp")
+
+require("lazy").setup({
+  spec = "plugins",
+  change_detection = { notify = false }
+})
