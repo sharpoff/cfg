@@ -27,5 +27,4 @@ vim.opt.updatetime = 50
 vim.g.netrw_banner = 0 -- disable top help menu
 vim.g.netrw_liststyle = 3
 
---vim.g.gruvbox_sign_column = 'bg0'
---vim.cmd('colorscheme gruvbox')
+vim.opt.guicursor = ""
