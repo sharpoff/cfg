@@ -27,4 +27,6 @@ vim.opt.updatetime = 50
 vim.g.netrw_banner = 0 -- disable top help menu
 vim.g.netrw_liststyle = 3
 
+vim.opt.colorcolumn = "80"
+
 vim.opt.guicursor = ""

@@ -20,7 +20,7 @@ return {
         end
 
         -- default setup for all servers
-        local servers = {'lua_ls', 'cmake', 'gopls'}
+        local servers = {'lua_ls', 'cmake', 'gopls', "jdtls", "rust_analyzer"}
         for _, lsp in ipairs(servers) do
             lspconfig[lsp].setup {
                 on_attach = on_attach,
