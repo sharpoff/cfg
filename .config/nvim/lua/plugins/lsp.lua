@@ -4,41 +4,69 @@ return {
         'hrsh7th/nvim-cmp',
         'hrsh7th/cmp-nvim-lsp',
         "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
     },
     config = function()
         local opts = { noremap=true, silent=true }
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
         local lspconfig = require('lspconfig')
         local cmp = require('cmp')
+
         vim.opt.completeopt = { "menu" }
 
         local on_attach = function(client, bufnr)
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-            vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+            vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end)
+            vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end)
+            vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration() end)
+            vim.keymap.set("n", "<leader>rf", function() vim.lsp.buf.references() end)
+            vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end)
+            vim.keymap.set("i", "<leader>hh", function() vim.lsp.buf.signature_help() end)
+            vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end)
+            vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end)
         end
-
-        -- default setup for all servers
-        local servers = {'lua_ls', 'cmake', 'gopls', "jdtls", "rust_analyzer"}
-        for _, lsp in ipairs(servers) do
-            lspconfig[lsp].setup {
-                on_attach = on_attach,
-                capabilities = capabilities
-            }
-        end
-
-        -- clangd setup
-        lspconfig.clangd.setup {
-            on_attach = on_attach,
-            capabilities = capabilities,
-            cmd = {
-                "clangd",
-                "--header-insertion=never"
-            }
-        }
 
         require("mason").setup()
+        require("mason-lspconfig").setup({
+            ensure_installed = {
+                "clangd",
+                "gopls",
+                "rust_analyzer",
+                "lua_ls",
+                "jdtls",
+            },
+            handlers = {
+                function(server_name) -- default handler (optional)
+                    require("lspconfig")[server_name].setup {
+                        capabilities = capabilities,
+                        on_attach = on_attach
+                    }
+                end,
+                clangd = function()
+                    lspconfig.clangd.setup {
+                        on_attach = on_attach,
+                        capabilities = capabilities,
+                        cmd = {
+                            "clangd",
+                            "--header-insertion=never"
+                        }
+                    }
+                end,
+                lua_ls = function()
+                    lspconfig.lua_ls.setup {
+                        capabilities = capabilities,
+                        settings = {
+                            Lua = {
+                                diagnostics = {
+                                    globals = { "vim" },
+                                }
+                            }
+                        }
+                    }
+                end,
+            },
+        })
+
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         -- completion setup
         cmp.setup({
@@ -48,50 +76,27 @@ return {
                 end,
             },
             mapping = cmp.mapping.preset.insert({
-                ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                ['<C-y>'] = cmp.mapping.abort(),
-                ['<C-e>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+                ['<C-e>'] = cmp.mapping.confirm({ select = true }),
+                ["<C-Space>"] = cmp.mapping.complete(),
             }),
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
             }, {
                 { name = 'buffer' },
             }),
-            formatting = {
-                -- formating source: https://github.com/hrsh7th/nvim-cmp/discussions/609#discussioncomment-5727678
-                fields = { "abbr", "menu", "kind" },
-                format = function(entry, item)
-                    local menu_icon = {
-                        nvim_lsp = "NLSP",
-                        nvim_lua = "NLUA",
-                        luasnip  = "LSNP",
-                        buffer   = "BUFF",
-                        path     = "PATH",
-                    }
-                    item.menu = menu_icon[entry.source.name]
+        })
 
-                    --fixed_width = 40
-
-                    fixed_width = fixed_width or false
-
-                    local content = item.abbr
-
-                    if fixed_width then
-                        vim.o.pumwidth = fixed_width
-                    end
-
-                    local win_width = vim.api.nvim_win_get_width(0)
-
-                    local max_content_width = fixed_width and fixed_width - 10 or math.floor(win_width * 0.2)
-
-                    if #content > max_content_width then
-                        item.abbr = vim.fn.strcharpart(content, 0, max_content_width - 3) .. "..."
-                    else
-                        item.abbr = content .. (" "):rep(max_content_width - #content)
-                    end
-                    return item
-                end,
+        vim.diagnostic.config({
+            -- update_in_insert = true,
+            float = {
+                focusable = false,
+                style = "minimal",
+                border = "rounded",
+                source = "always",
+                header = "",
+                prefix = "",
             },
         })
     end
