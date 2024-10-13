@@ -1,20 +1,115 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "--branch=stable",
-        "https://github.com/folke/lazy.nvim.git",
-        lazypath
-    })
-end
-vim.opt.rtp:prepend(lazypath)
+local vim = vim
+local Plug = vim.fn['plug#']
+
+vim.call('plug#begin')
+
+Plug("nvim-telescope/telescope.nvim")
+Plug("nvim-lua/plenary.nvim")
+
+-- lsp
+Plug("neovim/nvim-lspconfig")
+Plug("hrsh7th/nvim-cmp")
+Plug("hrsh7th/cmp-nvim-lsp")
+Plug("williamboman/mason.nvim")
+Plug("williamboman/mason-lspconfig.nvim")
+
+vim.call('plug#end')
 
 require("settings")
 require("mappings")
 
-require("lazy").setup({
-  spec = "plugins",
-  change_detection = { notify = false }
+-- telescope
+require('telescope').setup({})
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>pf', builtin.find_files, {})
+vim.keymap.set('n', '<leader>pg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>pb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
+vim.keymap.set('n', '<C-p>', builtin.git_files, {})
+
+------- lsp configuration -------
+local opts = { noremap=true, silent=true }
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local lspconfig = require('lspconfig')
+local cmp = require('cmp')
+
+vim.opt.completeopt = { "menu" }
+
+local on_attach = function(client, bufnr)
+    vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end)
+    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end)
+    vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration() end)
+    vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+    vim.keymap.set("n", "<leader>vrf", function() vim.lsp.buf.references() end)
+    vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end)
+    vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end)
+    vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end)
+    vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end)
+    vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end)
+end
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        "clangd",
+        "gopls",
+        "rust_analyzer",
+        "lua_ls",
+        "jdtls",
+    },
+    handlers = {
+        function(server_name) -- default handler (optional)
+            require("lspconfig")[server_name].setup {
+                capabilities = capabilities,
+                on_attach = on_attach
+            }
+        end,
+        clangd = function()
+            lspconfig.clangd.setup {
+                on_attach = on_attach,
+                capabilities = capabilities,
+                cmd = {
+                    "clangd",
+                    "--header-insertion=never"
+                }
+            }
+        end,
+    },
 })
+
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+-- completion setup
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+        end,
+    },
+    mapping = cmp.mapping.preset.insert({
+        ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+        ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+        ['<C-e>'] = cmp.mapping.confirm({ select = true }),
+        ["<C-Space>"] = cmp.mapping.complete(),
+    }),
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+    }, {
+        { name = 'buffer' },
+    }),
+})
+
+vim.diagnostic.config({
+    -- update_in_insert = true,
+    float = {
+        focusable = false,
+        style = "minimal",
+        border = "rounded",
+        source = "always",
+        header = "",
+        prefix = "",
+    },
+})
+
+
