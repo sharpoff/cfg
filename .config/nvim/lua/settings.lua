@@ -29,9 +29,9 @@ vim.opt.guicursor = ""
 vim.opt.pumheight = 10
 
 -- monochrome colors
-vim.cmd([[set bg=dark
-colorscheme quiet]])
-vim.cmd([[highlight Keyword gui=bold]])
-vim.cmd([[highlight Comment gui=italic]])
-vim.cmd([[highlight Constant guifg=#999999]])
-vim.cmd([[highlight NormalFloat guibg=#333333]])
+-- vim.cmd([[set bg=dark]])
+-- vim.cmd([[colorscheme quiet]])
+-- vim.cmd([[highlight Keyword gui=bold]])
+-- vim.cmd([[highlight Comment gui=italic]])
+-- vim.cmd([[highlight Constant guifg=#999999]])
+-- vim.cmd([[highlight NormalFloat guibg=#333333]])

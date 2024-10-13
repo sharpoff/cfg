@@ -186,6 +186,7 @@ bindsym $mod+r mode "resize"
 # CUSTOM
 bindsym --release Print exec import $(date "+$HOME/Pictures/%H-%M-%S-%Y.png")
 bindsym --release Shift+Print exec import -window root $(date "+$HOME/Pictures/F_%H-%M-%S-%Y.png")
+bindsym $mod+semicolon exec i3lock -c 000000
 exec --no-startup-id setxkbmap -model pc105 -layout us,ru -option grp:win_space_toggle
 
 # Start i3bar to display a workspace bar (plus the system information i3status
