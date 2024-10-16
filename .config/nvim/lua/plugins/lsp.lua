@@ -35,3 +35,4 @@ require'lspconfig'.rust_analyzer.setup{
 
 lspconfig.gopls.setup{}
 lspconfig.jdtls.setup{}
+lspconfig.pylsp.setup{}
